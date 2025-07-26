@@ -3,122 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini App</title>
+  <title>Mini App (Debug)</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: #f1f1f1;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px;
-    }
-    .section {
-      display: none;
-      padding: 20px;
-    }
-    .section.active { display: block; }
+    body { margin:0; font-family:Arial, sans-serif; background:#121212; color:#f1f1f1; }
+    .header { padding:16px; font-weight:bold; }
+    .section { display:none; padding:20px; }
+    .section.active { display:block; }
     .bottom-nav {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background-color: #1e1e1e;
-      padding: 10px;
-      display: flex;
-      justify-content: space-around;
+      position:fixed; bottom:0; left:0; right:0;
+      background:#1e1e1e; padding:10px; display:flex; justify-content:space-around;
     }
     .nav-btn {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
+      background:#007bff; color:white; border:none;
+      padding:10px 14px; border-radius:20px; cursor:pointer;
     }
     .user-info-card {
-      background-color: #2b2b2b;
-      border-radius: 15px;
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      margin: 10px 0;
-      max-width: 300px;
+      background:#2b2b2b; border-radius:15px; padding:15px;
+      display:flex; align-items:center; margin:10px 0; max-width:300px;
     }
-    .user-info-card img {
-      border-radius: 50%;
-      width: 60px; height: 60px;
-      margin-right: 15px;
-    }
+    .user-info-card img { border-radius:50%; width:60px; height:60px; margin-right:15px; }
     .points-box {
-      background: #2b2b2b;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
+      background:#2b2b2b; padding:15px; border-radius:10px; margin-top:10px;
+      font-size:16px; font-weight:bold; text-align:center;
     }
   </style>
 </head>
 <body>
 
-  <div id="home" class="section active">
-    <div class="header"><div class="section-title">🏠 Welcome to Home</div></div>
-    <div class="user-info-card">
-      <img src="" id="user-avatar" alt="Profile Picture">
-      <div>
-        <div class="user-name" id="user-name">Loading...</div>
-        <div class="user-username" id="user-username">Please wait</div>
-      </div>
-    </div>
-    <button class="nav-btn" onclick="showSection('leaderboard');loadLeaderboard()">🏆 Leaderboard</button>
-    <button class="nav-btn" onclick="addPoints(10)">+10 Points (Test Earn)</button>
-  </div>
-
-  <div id="earn" class="section">
-    <div class="header"><div class="section-title">💰 Earn Content</div></div>
-    <p>Complete tasks to earn more points!</p>
-    <button class="nav-btn" onclick="addPoints(50)">Complete Task (+50 Points)</button>
-  </div>
-
-  <div id="referral" class="section">
-    <div class="header"><div class="section-title">👥 Referral Content</div></div>
-    <p>Invite friends and earn +100 points for each referral!</p>
-    <div class="points-box" style="font-size:14px; text-align:left; display:flex; align-items:center; gap:5px;">
-      <span id="invite-link" style="flex:1; word-break:break-all;"></span>
-      <button onclick="copyInviteLink()" style="
-        background:#007bff; color:white;
-        border:none; padding:4px 6px;
-        border-radius:5px; font-size:12px;
-        cursor:pointer;">📋</button>
+<div id="home" class="section active">
+  <div class="header">🏠 Welcome to Home</div>
+  <div class="user-info-card">
+    <img src="" id="user-avatar" alt="Profile Picture">
+    <div>
+      <div id="user-name">Loading...</div>
+      <div id="user-username">Please wait</div>
     </div>
   </div>
+  <button class="nav-btn" onclick="showSection('leaderboard');loadLeaderboard()">🏆 Leaderboard</button>
+  <p>This is the Home section content.</p>
+  <button class="nav-btn" onclick="addPoints(10)">+10 Points (Test Earn)</button>
+</div>
 
-  <div id="balance" class="section">
-    <div class="header"><div class="section-title">💳 Balance Content</div></div>
-    <div class="points-box">Your Points: <span id="user-points">0</span> ⭐</div>
-  </div>
+<div id="earn" class="section">
+  <div class="header">💰 Earn Content</div>
+  <p>Complete tasks to earn more points!</p>
+  <button class="nav-btn" onclick="addPoints(50)">Complete Task (+50 Points)</button>
+</div>
 
-  <div id="leaderboard" class="section">
-    <div class="header"><div class="section-title">🏆 Leaderboard</div></div>
-    <div id="leaderboard-list"></div>
+<div id="referral" class="section">
+  <div class="header">👥 Referral Content</div>
+  <p>Invite friends and earn +100 points for each referral!</p>
+  <div class="points-box" style="font-size:14px; text-align:left;display:flex;align-items:center;gap:5px;">
+    <span id="invite-link" style="flex:1;word-break:break-all;"></span>
+    <button onclick="copyInviteLink()" style="background:#007bff;color:white;border:none;padding:4px 6px;
+      border-radius:5px;font-size:12px;cursor:pointer;">📋</button>
   </div>
+</div>
 
-  <div class="bottom-nav">
-    <button class="nav-btn" onclick="showSection('home')">🏠 Home</button>
-    <button class="nav-btn" onclick="showSection('earn')">💰 Earn</button>
-    <button class="nav-btn" onclick="showSection('referral')">👥 Referral</button>
-    <button class="nav-btn" onclick="showSection('balance')">💳 Balance</button>
-  </div>
+<div id="balance" class="section">
+  <div class="header">💳 Balance Content</div>
+  <div class="points-box">Your Points: <span id="user-points">0</span> ⭐</div>
+</div>
+
+<div id="leaderboard" class="section">
+  <div class="header">🏆 Leaderboard</div>
+  <div id="leaderboard-list"></div>
+</div>
+
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="showSection('home')">🏠 Home</button>
+  <button class="nav-btn" onclick="showSection('earn')">💰 Earn</button>
+  <button class="nav-btn" onclick="showSection('referral')">👥 Referral</button>
+  <button class="nav-btn" onclick="showSection('balance')">💳 Balance</button>
+</div>
 
 <script>
   let points = 0;
   const API_URL = "https://miniapp-backend-5wh6.vercel.app";
+  const botUsername = "Miniapp003bot";
 
   function showSection(id) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -130,9 +93,9 @@
     const tg = window.Telegram.WebApp;
     const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest";
     await fetch(`${API_URL}/add_points`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: userId, amount: amount })
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ user_id:userId, amount:amount })
     });
     updatePoints();
     alert(`+${amount} points added!`);
@@ -142,17 +105,19 @@
   async function updatePoints() {
     const tg = window.Telegram.WebApp;
     const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest";
-    const res = await fetch(`${API_URL}/points/${userId}`);
-    const data = await res.json();
-    points = data.points;
-    document.getElementById("user-points").textContent = points;
+    try {
+      const res = await fetch(`${API_URL}/points/${userId}`);
+      const data = await res.json();
+      points = data.points;
+      document.getElementById("user-points").textContent = points;
+    } catch (e) { console.error("Point Fetch Error", e); }
   }
 
   async function loadLeaderboard() {
     const res = await fetch(`${API_URL}/leaderboard`);
     const data = await res.json();
     let html = "<h3>🏆 Top Players</h3><ul>";
-    data.forEach(u => { html += `<li>${u.user_id} - ${u.points} ⭐</li>`; });
+    data.forEach(u => html += `<li>${u.user_id} - ${u.points} ⭐</li>`);
     html += "</ul>";
     document.getElementById("leaderboard-list").innerHTML = html;
   }
@@ -168,30 +133,34 @@
     const tg = window.Telegram.WebApp;
     const newUserId = tg.initDataUnsafe?.user?.id?.toString();
     if (referrerId && newUserId && referrerId !== newUserId) {
+      console.log("✅ Referral API Call:", referrerId, "→", newUserId);
       fetch(`${API_URL}/referral`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: referrerId, referral_id: newUserId })
-      }).then(updatePoints);
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({ user_id:referrerId, referral_id:newUserId })
+      }).then(() => { console.log("Referral Added ✅"); updatePoints(); });
     }
   }
 
   window.Telegram.WebApp.ready(function () {
     const tg = window.Telegram.WebApp;
+    console.log("🔍 Full Init Data:", tg.initDataUnsafe); // ✅ Debug Log
     const user = tg.initDataUnsafe?.user;
 
     if (user) {
+      console.log("✅ User Data OK", user);
       document.getElementById('user-name').textContent = `Hello, ${user.first_name}`;
       document.getElementById('user-username').textContent = `@${user.username || 'No Username'}`;
       document.getElementById('user-avatar').src = user.photo_url || 'https://placehold.it/60x60';
-      const botUsername = "Miniapp003bot";
       document.getElementById("invite-link").textContent =
         `https://t.me/${botUsername}?start=${user.id}`;
     } else {
+      console.warn("⚠️ No User Data - Probably testing in browser directly");
       document.getElementById('user-name').textContent = 'User info unavailable';
       document.getElementById('user-username').textContent = '';
       document.getElementById('user-avatar').src = 'https://placehold.it/60x60';
     }
+
     checkReferral();
     updatePoints();
   });
