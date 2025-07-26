@@ -150,9 +150,17 @@
       <div class="section-title">👥 Referral Content</div>
     </div>
     <p>Invite friends and earn +100 points for each referral!</p>
-    <div class="points-box" style="font-size:14px;">
-    Your Invite Link: <br>
-    <span id="invite-link">Loading...</span>
+    <div class="points-box" style="font-size:14px; text-align:left; display:flex; align-items:center; gap:5px;">
+    <span id="invite-link" style="flex:1; word-break:break-all;"></span>
+    <button onclick="copyInviteLink()" style="
+      background:#007bff;
+      color:white;
+      border:none;
+      padding:4px 6px;
+      border-radius:5px;
+      font-size:12px;
+      cursor:pointer;
+    ">📋</button>
     </div>
     <button class="nav-btn" onclick="addPoints(100)">Add Referral Points (+100)</button>
   </div>
@@ -246,7 +254,14 @@
   html += "</ul>";
   document.getElementById("leaderboard").innerHTML = html;
   }
-    
+
+  function copyInviteLink() {
+  const link = document.getElementById("invite-link").textContent;
+  navigator.clipboard.writeText(link).then(() => {
+    alert("✅ Invite Link Copied!");
+  });
+  }
+  
     window.Telegram.WebApp.ready();
     const user = window.Telegram.WebApp.initDataUnsafe?.user;
     if (user) {
