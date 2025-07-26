@@ -166,14 +166,12 @@
     <button class="nav-btn" onclick="showSection('referral')">👥Referral</button>
     <button class="nav-btn" onclick="showSection('balance')">💳Balance</button>
   </div>
-
-  <script>
+  
+<script>
     let points = 0;
+    const API_URL = "https://miniapp-backend-5wh6.vercel.app"; // မင်းရတဲ့ Vercel Backend URL
 
-  <script>
-    let points = 0;
-    const API_URL = "https://miniapp-backend-5wh6.vercel.app"; // မင်းရတဲ့ Backend URL
-
+  
     function showSection(id) {
       document.querySelectorAll('.section').forEach((section) => {
         section.classList.remove('active');
@@ -182,34 +180,47 @@
       updatePoints();
     }
 
+  
     async function addPoints(amount) {
-      const userId = window.Telegram.WebApp.initDataUnsafe?.user?.id || "guest";
+      const tg = window.Telegram.WebApp;
+      const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest"; 
 
-      // Backend ကို Points ပိုမယ်
-      await fetch(`${API_URL}/add_points`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId, amount: amount })
-      });
+      try {
+        await fetch(`${API_URL}/add_points`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId, amount: amount })
+        });
 
-      // Backend က Updated Points ပြန်ယူမယ်
-      const res = await fetch(`${API_URL}/points/${userId}`);
-      const data = await res.json();
+        const res = await fetch(`${API_URL}/points/${userId}`);
+        const data = await res.json();
 
-      points = data.points;
-      alert(`+${amount} points added!`);
-      updatePoints();
-      showSection('balance');
+        points = data.points;
+        alert(`+${amount} points added!`);
+        updatePoints();
+        showSection('balance');
+      } catch (err) {
+        console.error("API Error:", err);
+        alert("⚠️ API error, try again!");
+      }
     }
 
+    
     async function updatePoints() {
-      const userId = window.Telegram.WebApp.initDataUnsafe?.user?.id || "guest";
-      const res = await fetch(`${API_URL}/points/${userId}`);
-      const data = await res.json();
-      points = data.points;
-      document.getElementById("user-points").textContent = points;
+      const tg = window.Telegram.WebApp;
+      const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest";
+
+      try {
+        const res = await fetch(`${API_URL}/points/${userId}`);
+        const data = await res.json();
+        points = data.points;
+        document.getElementById("user-points").textContent = points;
+      } catch (err) {
+        console.error("Points Fetch Error:", err);
+      }
     }
 
+    
     window.Telegram.WebApp.ready();
     const user = window.Telegram.WebApp.initDataUnsafe?.user;
     if (user) {
@@ -221,7 +232,8 @@
       document.getElementById('user-username').textContent = '';
       document.getElementById('user-avatar').src = 'https://placehold.it/60x60';
     }
-  </script>
+      </script>
+ 
 
 </body>
 </html>
