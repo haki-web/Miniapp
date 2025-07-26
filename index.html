@@ -170,6 +170,10 @@
   <script>
     let points = 0;
 
+  <script>
+    let points = 0;
+    const API_URL = "https://miniapp-backend-5wh6.vercel.app"; // မင်းရတဲ့ Backend URL
+
     function showSection(id) {
       document.querySelectorAll('.section').forEach((section) => {
         section.classList.remove('active');
@@ -178,18 +182,34 @@
       updatePoints();
     }
 
-    function addPoints(amount) {
-      points += amount;
+    async function addPoints(amount) {
+      const userId = window.Telegram.WebApp.initDataUnsafe?.user?.id || "guest";
+
+      // Backend ကို Points ပိုမယ်
+      await fetch(`${API_URL}/add_points`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, amount: amount })
+      });
+
+      // Backend က Updated Points ပြန်ယူမယ်
+      const res = await fetch(`${API_URL}/points/${userId}`);
+      const data = await res.json();
+
+      points = data.points;
       alert(`+${amount} points added!`);
       updatePoints();
-      showSection('balance'); 
+      showSection('balance');
     }
 
-    function updatePoints() {
+    async function updatePoints() {
+      const userId = window.Telegram.WebApp.initDataUnsafe?.user?.id || "guest";
+      const res = await fetch(`${API_URL}/points/${userId}`);
+      const data = await res.json();
+      points = data.points;
       document.getElementById("user-points").textContent = points;
     }
 
-    
     window.Telegram.WebApp.ready();
     const user = window.Telegram.WebApp.initDataUnsafe?.user;
     if (user) {
@@ -202,5 +222,6 @@
       document.getElementById('user-avatar').src = 'https://placehold.it/60x60';
     }
   </script>
+
 </body>
 </html>
