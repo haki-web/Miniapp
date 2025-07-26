@@ -144,26 +144,27 @@
 
   window.Telegram.WebApp.ready(function () {
     const tg = window.Telegram.WebApp;
-    console.log("🔍 Full Init Data:", tg.initDataUnsafe);
-    const user = tg.initDataUnsafe?.user;
+tg.ready();
 
-    if (user) {
-      console.log("✅ User Data OK", user);
-      document.getElementById('user-name').textContent = `Hello, ${user.first_name}`;
-      document.getElementById('user-username').textContent = `@${user.username || 'No Username'}`;
-      document.getElementById('user-avatar').src = user.photo_url || 'https://placehold.it/60x60';
-      document.getElementById("invite-link").textContent =
-        `https://t.me/${botUsername}?start=${user.id}`;
-    } else {
-      console.warn("⚠️ No User Data - Probably testing in browser directly");
-      document.getElementById('user-name').textContent = 'User info unavailable';
-      document.getElementById('user-username').textContent = '';
-      document.getElementById('user-avatar').src = 'https://placehold.it/60x60';
-    }
+console.log("🔍 Full Init Data:", tg.initDataUnsafe);
+const user = tg.initDataUnsafe?.user;
 
-    checkReferral();
-    updatePoints();
-  });
+if (user) {
+  console.log("✅ User Data OK", user);
+  document.getElementById('user-name').textContent = `Hello, ${user.first_name}`;
+  document.getElementById('user-username').textContent = `@${user.username || 'No Username'}`;
+  document.getElementById('user-avatar').src = user.photo_url || 'https://placehold.it/60x60';
+  document.getElementById("invite-link").textContent =
+    `https://t.me/${botUsername}?start=${user.id}`;
+} else {
+  console.warn("⚠️ No User Data - Probably testing in browser directly");
+  document.getElementById('user-name').textContent = 'User info unavailable';
+  document.getElementById('user-username').textContent = '';
+  document.getElementById('user-avatar').src = 'https://placehold.it/60x60';
+}
+
+checkReferral();
+updatePoints();
 </script>
 
 </body>
