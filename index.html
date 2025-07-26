@@ -1,48 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Telegram Mini App</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  body {
-    margin: 0; font-family: Arial, sans-serif; background: #121212; color: #fff;
-  }
-  .section { display: none; padding: 20px; }
-  .section.active { display: block; }
-  .nav-btn {
-    background: #007bff; color: #fff; border: none; padding: 10px 14px;
-    border-radius: 8px; margin: 5px;
-    cursor: pointer;
-  }
-  .user-info-card {
-    background: #2b2b2b; border-radius: 10px; padding: 10px; display: flex; align-items: center;
-    margin-bottom: 20px;
-  }
-  .user-info-card img {
-    border-radius: 50%; width: 60px; height: 60px; margin-right: 15px;
-  }
-  .nav-bar {
-    position: fixed; bottom: 10px; width: 100%; background: #1e1e1e; padding: 8px 0;
-    display: flex; justify-content: space-around;
-  }
+  body { margin:0; font-family:Arial; background:#121212; color:#fff; }
+  .section { display:none; padding:20px; }
+  .section.active { display:block; }
+  .nav-btn { background:#007bff; color:#fff; border:none; padding:10px 14px;
+    border-radius:8px; margin:5px; cursor:pointer; }
+  .user-info-card { background:#2b2b2b; border-radius:10px; padding:10px;
+    display:flex; align-items:center; margin-bottom:20px; }
+  .user-info-card img { border-radius:50%; width:60px; height:60px; margin-right:15px; }
+  .nav-bar { position:fixed; bottom:10px; width:100%; background:#1e1e1e;
+    display:flex; justify-content:space-around; padding:8px 0; }
 </style>
 </head>
 <body>
 
 <div id="home" class="section active">
   <div class="user-info-card">
-    <img id="user-avatar" src="https://placehold.it/60x60" alt="User Avatar" />
+    <img id="user-avatar" src="https://placehold.it/60x60" alt="User Avatar">
     <div>
       <div id="user-name">Loading...</div>
       <div id="user-username"></div>
       <div>Points: <span id="user-points">0</span></div>
     </div>
   </div>
-  <div>
-    <strong>Invite your friends:</strong>
-    <div id="invite-link" style="word-break: break-word; margin: 8px 0; user-select: all; cursor: pointer;"></div>
+  <div><strong>Invite your friends:</strong>
+    <div id="invite-link" style="word-break:break-word;margin:8px 0;"></div>
     <button class="nav-btn" onclick="copyInviteLink()">Copy Invite Link</button>
   </div>
 </div>
@@ -54,12 +42,12 @@
 
 <div id="referral" class="section">
   <h3>Referral Info</h3>
-  <p>Invite friends using your invite link and earn 100 points for each new referral!</p>
+  <p>Invite friends & get 100 points!</p>
 </div>
 
 <div id="balance" class="section">
   <h3>Your Points Balance</h3>
-  <div style="font-size: 24px; font-weight: bold;" id="user-points-balance">0</div>
+  <div style="font-size:24px;font-weight:bold" id="user-points-balance">0</div>
 </div>
 
 <div class="nav-bar">
@@ -70,103 +58,72 @@
 </div>
 
 <script>
-  const API_URL = "https://miniapp-backend-ax0y2mm08-haki-web-5844s-projects.vercel.app";
-  const botUsername = "New003bot"; 
+const API_URL = "https://miniapp-backend-ax0y2mm08-haki-web-5844s-projects.vercel.app";
+const botUsername = "New003bot";
 
-  function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    if(id === 'balance' || id === 'home') updatePoints();
-  }
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='home'||id==='balance') updatePoints();
+}
 
-  async function addPoints(amount) {
-    const tg = window.Telegram.WebApp;
-    const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest";
-
-    try {
-      const res = await fetch(`${API_URL}/add_points`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId, amount: amount })
-      });
-      const data = await res.json();
-      if(data.status === "ok") {
-        alert(`+${amount} points added!`);
-        updatePoints();
-        showSection('balance');
-      } else {
-        alert("Failed to add points");
-      }
-    } catch (e) {
-      console.error("Add points error:", e);
-      alert("Error adding points");
-    }
-  }
-
-  async function updatePoints() {
-    const tg = window.Telegram.WebApp;
-    const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest";
-    try {
-      const res = await fetch(`${API_URL}/points/${userId}`);
-      const data = await res.json();
-      const points = data.points || 0;
-      document.getElementById("user-points").textContent = points;
-      document.getElementById("user-points-balance").textContent = points;
-    } catch (e) {
-      console.error("Point Fetch Error", e);
-    }
-  }
-
-  function copyInviteLink() {
-    const link = document.getElementById("invite-link").textContent;
-    navigator.clipboard.writeText(link)
-      .then(() => alert("✅ Invite Link Copied!"))
-      .catch(() => alert("Failed to copy invite link"));
-  }
-
-  function checkReferral() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const referrerId = urlParams.get("start");
-    const tg = window.Telegram.WebApp;
-    const newUserId = tg.initDataUnsafe?.user?.id?.toString();
-
-    if (referrerId && newUserId && referrerId !== newUserId) {
-      console.log("✅ Referral API Call:", referrerId, "→", newUserId);
-      fetch(`${API_URL}/referral`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: referrerId, referral_id: newUserId })
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log("Referral response:", data);
-        updatePoints();
-      })
-      .catch(e => console.error("Referral error:", e));
-    }
-  }
-
-  window.Telegram.WebApp.ready(() => {
-    const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe?.user;
-
-    if (user) {
-      document.getElementById('user-name').textContent = `Hello, ${user.first_name}`;
-      document.getElementById('user-username').textContent = `@${user.username || 'No Username'}`;
-      document.getElementById('user-avatar').src = user.photo_url || 'https://placehold.it/60x60';
-      document.getElementById("invite-link").textContent =
-        `https://t.me/${botUsername}?start=${user.id}`;
-    } else {
-      document.getElementById('user-name').textContent = "User info unavailable";
-      document.getElementById('user-username').textContent = "";
-      document.getElementById('user-avatar').src = "https://placehold.it/60x60";
-      document.getElementById("invite-link").textContent = "";
-    }
-
-    checkReferral();
-    updatePoints();
+async function addPoints(amount){
+  const tg = window.Telegram.WebApp;
+  const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest";
+  await fetch(`${API_URL}/add_points`,{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({user_id:userId,amount:amount})
   });
-</script>
+  alert(`+${amount} points added!`);
+  updatePoints();
+}
 
+async function updatePoints(){
+  const tg = window.Telegram.WebApp;
+  const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest";
+  const res = await fetch(`${API_URL}/points/${userId}`);
+  const data = await res.json();
+  document.getElementById("user-points").textContent = data.points;
+  document.getElementById("user-points-balance").textContent = data.points;
+}
+
+function copyInviteLink(){
+  const link=document.getElementById("invite-link").textContent;
+  navigator.clipboard.writeText(link).then(()=>alert("✅ Copied!"));
+}
+
+function checkReferral(){
+  const urlParams=new URLSearchParams(window.location.search);
+  const referrerId=urlParams.get("start");
+  const tg=window.Telegram.WebApp;
+  const newUserId=tg.initDataUnsafe?.user?.id?.toString();
+  if(referrerId&&newUserId&&referrerId!==newUserId){
+    fetch(`${API_URL}/referral`,{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({user_id:referrerId,referral_id:newUserId})
+    }).then(r=>r.json()).then(d=>{
+      console.log("Referral response:",d);
+      updatePoints();
+    });
+  }
+}
+
+const tg = window.Telegram.WebApp;
+tg.ready();
+console.log("🔍 Full Init Data:", tg.initDataUnsafe);
+
+const user = tg.initDataUnsafe?.user;
+if(user){
+  document.getElementById('user-name').textContent=`Hello, ${user.first_name}`;
+  document.getElementById('user-username').textContent=`@${user.username||'No Username'}`;
+  document.getElementById('user-avatar').src=user.photo_url||'https://placehold.it/60x60';
+  document.getElementById("invite-link").textContent=`https://t.me/${botUsername}?start=${user.id}`;
+}else{
+  console.warn("⚠️ No user data - Open in Telegram App");
+}
+
+checkReferral();
+updatePoints();
+</script>
 </body>
 </html>
