@@ -142,18 +142,14 @@
   async function addPoints(amount) {
     const tg = window.Telegram.WebApp;
     const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest";
-    try {
-      await fetch(`${API_URL}/add_points`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId, amount: amount })
-      });
-      updatePoints();
-      alert(`+${amount} points added!`);
-      showSection('balance');
-    } catch (err) {
-      console.error("API Error:", err);
-    }
+    await fetch(`${API_URL}/add_points`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: userId, amount: amount })
+    });
+    updatePoints();
+    alert(`+${amount} points added!`);
+    showSection('balance');
   }
 
   async function updatePoints() {
@@ -164,8 +160,8 @@
       const data = await res.json();
       points = data.points;
       document.getElementById("user-points").textContent = points;
-    } catch (err) {
-      console.error("Points Fetch Error:", err);
+    } catch (e) {
+      console.error("Point Fetch Error", e);
     }
   }
 
@@ -180,9 +176,7 @@
 
   function copyInviteLink() {
     const link = document.getElementById("invite-link").textContent;
-    navigator.clipboard.writeText(link).then(() => {
-      alert("✅ Invite Link Copied!");
-    });
+    navigator.clipboard.writeText(link).then(() => alert("✅ Invite Link Copied!"));
   }
 
   function checkReferral() {
@@ -202,13 +196,15 @@
     }
   }
 
-  window.Telegram.WebApp.ready(() => {
-    checkReferral();
-    const user = window.Telegram.WebApp.initDataUnsafe?.user;
+  window.Telegram.WebApp.ready(function () {
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe?.user;
+
     if (user) {
       document.getElementById('user-name').textContent = `Hello, ${user.first_name}`;
       document.getElementById('user-username').textContent = `@${user.username || 'No Username'}`;
       document.getElementById('user-avatar').src = user.photo_url || 'https://placehold.it/60x60';
+
       const botUsername = "Miniapp003bot";
       document.getElementById("invite-link").textContent =
         `https://t.me/${botUsername}?start=${user.id}`;
@@ -217,9 +213,12 @@
       document.getElementById('user-username').textContent = '';
       document.getElementById('user-avatar').src = 'https://placehold.it/60x60';
     }
+
+    checkReferral();
     updatePoints();
   });
-</script>
+        </script>
+
 
 </body>
 </html>
