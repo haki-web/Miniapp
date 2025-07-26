@@ -159,12 +159,20 @@
     </div>
   </div>
 
+  <div id="leaderboard" class="section">
+  <div class="header">
+    <div class="section-title">🏆 Leaderboard</div>
+  </div>
+  <div id="leaderboard"></div>
+  </div>
+
   
   <div class="bottom-nav">
     <button class="nav-btn" onclick="showSection('home')">🏠Home</button>
     <button class="nav-btn" onclick="showSection('earn')">💰Earn</button>
     <button class="nav-btn" onclick="showSection('referral')">👥Referral</button>
     <button class="nav-btn" onclick="showSection('balance')">💳Balance</button>
+    <button class="nav-btn" onclick="showSection('leaderboard');loadLeaderboard()">🏆Leaderboard</button>
   </div>
   
 <script>
@@ -220,6 +228,18 @@
       }
     }
 
+
+  async function loadLeaderboard() {
+  const res = await fetch(`${API_URL}/leaderboard`);
+  const data = await res.json();
+
+  let html = "<h3>🏆 Top Players</h3><ul>";
+  data.forEach((user) => {
+    html += `<li>${user.user_id} - ${user.points} ⭐</li>`;
+  });
+  html += "</ul>";
+  document.getElementById("leaderboard").innerHTML = html;
+  }
     
     window.Telegram.WebApp.ready();
     const user = window.Telegram.WebApp.initDataUnsafe?.user;
