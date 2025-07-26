@@ -125,6 +125,7 @@
         <div class="user-name" id="user-name">Loading...</div>
         <div class="user-username" id="user-username">Please wait</div>
       </div>
+      <button class="nav-btn" onclick="showSection('leaderboard');loadLeaderboard()">🏆Leaderboard</button>
     </div>
 
     <p>This is the Home section content.</p>
@@ -146,6 +147,10 @@
       <div class="section-title">👥 Referral Content</div>
     </div>
     <p>Invite friends and earn +100 points for each referral!</p>
+    <div class="points-box" style="font-size:14px;">
+    Your Invite Link: <br>
+    <span id="invite-link">Loading...</span>
+    </div>
     <button class="nav-btn" onclick="addPoints(100)">Add Referral Points (+100)</button>
   </div>
 
@@ -166,13 +171,11 @@
   <div id="leaderboard"></div>
   </div>
 
-  
   <div class="bottom-nav">
     <button class="nav-btn" onclick="showSection('home')">🏠Home</button>
     <button class="nav-btn" onclick="showSection('earn')">💰Earn</button>
     <button class="nav-btn" onclick="showSection('referral')">👥Referral</button>
     <button class="nav-btn" onclick="showSection('balance')">💳Balance</button>
-    <button class="nav-btn" onclick="showSection('leaderboard');loadLeaderboard()">🏆Leaderboard</button>
   </div>
   
 <script>
@@ -247,6 +250,11 @@
       document.getElementById('user-name').textContent = `Hello, ${user.first_name}`;
       document.getElementById('user-username').textContent = `@${user.username || 'No Username'}`;
       document.getElementById('user-avatar').src = user.photo_url || 'https://placehold.it/60x60';
+
+      const botUsername = "Miniapp003bot";
+  document.getElementById("invite-link").textContent = 
+    `https://t.me/${botUsername}?start=${user.id}`;
+    
     } else {
       document.getElementById('user-name').textContent = 'User info unavailable';
       document.getElementById('user-username').textContent = '';
