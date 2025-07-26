@@ -261,6 +261,28 @@
     alert("✅ Invite Link Copied!");
   });
   }
+
+function checkReferral() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const referrerId = urlParams.get("start");
+
+  const tg = window.Telegram.WebApp;
+  const newUserId = tg.initDataUnsafe?.user?.id?.toString();
+
+  if (referrerId && newUserId && referrerId !== newUserId) {
+    fetch(`${API_URL}/referral`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: referrerId, referral_id: newUserId })
+    }).then(() => {
+      console.log("✅ Referral API called!");
+    });
+  }
+}
+
+window.Telegram.WebApp.ready();
+checkReferral();
+
   
     window.Telegram.WebApp.ready();
     const user = window.Telegram.WebApp.initDataUnsafe?.user;
