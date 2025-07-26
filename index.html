@@ -93,9 +93,9 @@
     const tg = window.Telegram.WebApp;
     const userId = tg.initDataUnsafe?.user?.id?.toString() || "guest";
     await fetch(`${API_URL}/add_points`, {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({ user_id:userId, amount:amount })
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: userId, amount: amount })
     });
     updatePoints();
     alert(`+${amount} points added!`);
@@ -140,16 +140,19 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: referrerId, referral_id: newUserId })
-      }).then(() => {
-        console.log("Referral Added ✅");
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Referral response:", data);
         updatePoints();
-      });
+      })
+      .catch(e => console.error("Referral error:", e));
+    } else {
+      console.log("⚠️ No referral or invalid referral params");
     }
   }
-
-  
   const tg = window.Telegram.WebApp;
-  tg.ready(); 
+  tg.ready();
 
   console.log("🔍 Full Init Data:", tg.initDataUnsafe);
   const user = tg.initDataUnsafe?.user;
@@ -167,7 +170,6 @@
     document.getElementById('user-username').textContent = '';
     document.getElementById('user-avatar').src = 'https://placehold.it/60x60';
   }
-
   checkReferral();
   updatePoints();
 </script>
