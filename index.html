@@ -110,7 +110,9 @@
       const data = await res.json();
       points = data.points;
       document.getElementById("user-points").textContent = points;
-    } catch (e) { console.error("Point Fetch Error", e); }
+    } catch (e) {
+      console.error("Point Fetch Error", e);
+    }
   }
 
   async function loadLeaderboard() {
@@ -135,36 +137,39 @@
     if (referrerId && newUserId && referrerId !== newUserId) {
       console.log("✅ Referral API Call:", referrerId, "→", newUserId);
       fetch(`${API_URL}/referral`, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify({ user_id:referrerId, referral_id:newUserId })
-      }).then(() => { console.log("Referral Added ✅"); updatePoints(); });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: referrerId, referral_id: newUserId })
+      }).then(() => {
+        console.log("Referral Added ✅");
+        updatePoints();
+      });
     }
   }
 
-  window.Telegram.WebApp.ready(function () {
-    const tg = window.Telegram.WebApp;
-tg.ready();
+  
+  const tg = window.Telegram.WebApp;
+  tg.ready(); 
 
-console.log("🔍 Full Init Data:", tg.initDataUnsafe);
-const user = tg.initDataUnsafe?.user;
+  console.log("🔍 Full Init Data:", tg.initDataUnsafe);
+  const user = tg.initDataUnsafe?.user;
 
-if (user) {
-  console.log("✅ User Data OK", user);
-  document.getElementById('user-name').textContent = `Hello, ${user.first_name}`;
-  document.getElementById('user-username').textContent = `@${user.username || 'No Username'}`;
-  document.getElementById('user-avatar').src = user.photo_url || 'https://placehold.it/60x60';
-  document.getElementById("invite-link").textContent =
-    `https://t.me/${botUsername}?start=${user.id}`;
-} else {
-  console.warn("⚠️ No User Data - Probably testing in browser directly");
-  document.getElementById('user-name').textContent = 'User info unavailable';
-  document.getElementById('user-username').textContent = '';
-  document.getElementById('user-avatar').src = 'https://placehold.it/60x60';
-}
+  if (user) {
+    console.log("✅ User Data OK", user);
+    document.getElementById('user-name').textContent = `Hello, ${user.first_name}`;
+    document.getElementById('user-username').textContent = `@${user.username || 'No Username'}`;
+    document.getElementById('user-avatar').src = user.photo_url || 'https://placehold.it/60x60';
+    document.getElementById("invite-link").textContent =
+      `https://t.me/${botUsername}?start=${user.id}`;
+  } else {
+    console.warn("⚠️ No User Data - Probably testing in browser directly");
+    document.getElementById('user-name').textContent = 'User info unavailable';
+    document.getElementById('user-username').textContent = '';
+    document.getElementById('user-avatar').src = 'https://placehold.it/60x60';
+  }
 
-checkReferral();
-updatePoints();
+  checkReferral();
+  updatePoints();
 </script>
 
 </body>
